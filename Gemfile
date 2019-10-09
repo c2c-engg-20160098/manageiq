@@ -41,7 +41,7 @@ gem "byebug",                                          :require => false
 gem "color",                          "~>1.8"
 gem "config",                         "~>1.6.0",       :require => false
 gem "dalli",                          "=2.7.6",        :require => false
-gem "default_value_for",              "~>3.0.3"
+gem "default_value_for",              "~>3.3"
 gem "docker-api",                     "~>1.33.6",      :require => false
 gem "elif",                           "=0.1.0",        :require => false
 gem "fast_gettext",                   "~>2.0.1"
@@ -76,8 +76,9 @@ gem "rake",                           ">=11.0",        :require => false
 gem "rest-client",                    "~>2.0.0",       :require => false
 gem "ripper_ruby_parser",             "~>1.5.1",       :require => false
 gem "ruby-progressbar",               "~>1.7.0",       :require => false
-gem "rubyzip",                        "~>1.2.2",       :require => false
+gem "rubyzip",                        "~>1.3.0",       :require => false
 gem "snmp",                           "~>1.2.0",       :require => false
+gem "sprockets",                      "~>3.0",         :require => false
 gem "sqlite3",                        "~>1.3.0",       :require => false
 gem "sys-filesystem",                 "~>1.2.0"
 gem "terminal",                                        :require => false
@@ -261,11 +262,14 @@ unless ENV["APPLIANCE"]
     gem "brakeman",         "~>3.3",    :require => false
     gem "capybara",         "~>2.5.0",  :require => false
     gem "coveralls",                    :require => false
-    gem "factory_bot",      "~>4.11.1", :require => false
+    gem "factory_bot",      "~>5.1",    :require => false
+
+    # TODO: faker is used for url generation in git repository factory and the lenovo
+    # provider, via a xclarity_client dependency
     gem "faker",            "~>1.8",    :require => false
-    gem "timecop",          "~>0.7.3",  :require => false
-    gem "vcr",              "~>3.0.2",  :require => false
-    gem "webmock",          "~>3.6.0",  :require => false
+    gem "timecop",          "~>0.9",    :require => false
+    gem "vcr",              "~>5.0",    :require => false
+    gem "webmock",          "~>3.7",    :require => false
   end
 
   group :development, :test do

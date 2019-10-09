@@ -8,6 +8,8 @@ module Rbac
       Authentication
       AvailabilityZone
       CloudNetwork
+      CloudObjectStoreContainer
+      CloudObjectStoreObject
       CloudSubnet
       CloudTenant
       CloudVolume
@@ -171,7 +173,7 @@ module Rbac
     # @option options :conditions    [Hash|String|Array<String>]
     # @option options :where_clause  []
     # @option options :sub_filter
-    # @option options :include_for_find [Array<Symbol>]
+    # @option options :include_for_find [Array<Symbol>, Hash{Symbol => Symbol,Hash,Array}] models included but not in query
     # @option options :filter       [MiqExpression] (optional)
 
     # @option options :user         [User]     (default: current_user)
@@ -411,7 +413,7 @@ module Rbac
 
       ref_includes = Hash(include_for_find).merge(Hash(exp_includes))
       unless polymorphic_include?(klass, ref_includes)
-        scope = scope.references(include_for_find).references(exp_includes)
+        scope = scope.references(klass.includes_to_references(include_for_find)).references(klass.includes_to_references(exp_includes))
       end
       scope
     end
@@ -693,7 +695,7 @@ module Rbac
     end
 
     def lookup_user_group(user, userid, miq_group, miq_group_id)
-      user ||= (userid && User.find_by_userid(userid)) || User.current_user
+      user ||= (userid && User.lookup_by_userid(userid)) || User.current_user
       miq_group_id ||= miq_group.try!(:id)
       return [user, user.current_group] if user && user.current_group_id.to_s == miq_group_id.to_s
 
@@ -796,8 +798,12 @@ module Rbac
 
     def belongsto_association_filtered?(vcmeta, klass)
       if [ExtManagementSystem, Host].any? { |x| vcmeta.kind_of?(x) }
-        # Eject early if true
-        return true if associated_belongsto_models.any? { |associated| klass <= associated }
+        # Eject early if klass(requested for RBAC check) is allowed to be filtered by
+        # belongsto filtering generally and whether relation (based on the klass) exists on object
+        # from belongsto filter at all.
+        return true if associated_belongsto_models.any? do |associated|
+          klass <= associated && vcmeta.respond_to?(associated.base_model.to_s.tableize)
+        end
       end
 
       if vcmeta.kind_of?(ManageIQ::Providers::NetworkManager)

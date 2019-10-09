@@ -28,10 +28,8 @@ class InfraConversionJob < Job
     {
       :initializing                         => {'initialize'         => 'waiting_to_start'},
       :start                                => {'waiting_to_start'   => 'started'},
-      :remove_snapshots                     => {'started'            => 'removing_snapshots'},
-      :poll_remove_snapshots_complete       => {'removing_snapshots' => 'removing_snapshots'},
       :wait_for_ip_address                  => {
-        'removing_snapshots'     => 'waiting_for_ip_address',
+        'started'                => 'waiting_for_ip_address',
         'powering_on_vm'         => 'waiting_for_ip_address',
         'waiting_for_ip_address' => 'waiting_for_ip_address'
       },
@@ -77,24 +75,19 @@ class InfraConversionJob < Job
   #   }
   def state_settings
     @state_settings ||= {
-      :removing_snapshots            => {
-        :description => 'Remove snapshosts',
-        :weight      => 5,
-        :max_retries => 4.hours / state_retry_interval
-      },
       :waiting_for_ip_address        => {
         :description => 'Waiting for VM IP address',
-        :weight      => 1,
+        :weight      => 2,
         :max_retries => 1.hour / state_retry_interval
       },
       :running_migration_playbook    => {
         :description => "Running #{migration_phase}-migration playbook",
-        :weight      => 10,
+        :weight      => 15,
         :max_retries => 6.hours / state_retry_interval
       },
       :shutting_down_vm              => {
         :description => "Shutting down virtual machine",
-        :weight      => 1,
+        :weight      => 2,
         :max_retries => 15.minutes / state_retry_interval
       },
       :transforming_vm               => {
@@ -104,7 +97,7 @@ class InfraConversionJob < Job
       },
       :waiting_for_inventory_refresh => {
         :description => "Identify destination VM",
-        :weight      => 4,
+        :weight      => 1,
         :max_retries => 1.hour / state_retry_interval
       },
       :applying_right_sizing         => {
@@ -117,7 +110,7 @@ class InfraConversionJob < Job
       },
       :powering_on_vm                => {
         :description => "Power on virtual machine",
-        :weight      => 1,
+        :weight      => 2,
         :max_retries => 15.minutes / state_retry_interval
       },
       :marking_vm_migrated           => {
@@ -135,6 +128,10 @@ class InfraConversionJob < Job
   end
 
   # --- Override Job methods to handle cancelation properly  --- #
+
+  def self.current_job_timeout(_timeout_adjustment = 1)
+    36.hours
+  end
 
   def process_abort(*args)
     message, status = args
@@ -213,8 +210,11 @@ class InfraConversionJob < Job
     progress = migration_task.options[:progress] || { :current_state => state, :percent => 0.0, :states => {} }
     state_hash = send(state_phase, progress[:states][state.to_sym], state_progress)
     progress[:states][state.to_sym] = state_hash
-    progress[:current_description] = state_settings[state.to_sym][:description] if state_phase == :on_entry && state_settings[state.to_sym][:description].present?
-    progress[:percent] += state_hash[:percent] * state_settings[state.to_sym][:weight] / 100.0 if state_settings[state.to_sym][:weight].present?
+    if state_phase == :on_entry
+      progress[:current_state] = state
+      progress[:current_description] = state_settings[state.to_sym][:description] if state_settings[state.to_sym][:description].present?
+    end
+    progress[:percent] = progress[:states].map { |k, v| v[:percent] * (state_settings[k.to_sym][:weight] || 0) / 100.0 }.inject(0) { |sum, x| sum + x }
     migration_task.update_transformation_progress(progress)
     abort_conversion('Migration cancelation requested', 'ok') if migration_task.cancel_requested?
   end
@@ -272,42 +272,7 @@ class InfraConversionJob < Job
   def start
     migration_task.update!(:state => 'migrate')
     migration_task.update_options(:migration_phase => 'pre')
-    queue_signal(:remove_snapshots)
-  end
-
-  def remove_snapshots
-    update_migration_task_progress(:on_entry)
-    if migration_task.source.supports_remove_all_snapshots?
-      context[:async_task_id_removing_snapshots] = migration_task.source.remove_all_snapshots_queue(migration_task.userid.to_i)
-      update_migration_task_progress(:on_exit)
-      return queue_signal(:poll_remove_snapshots_complete, :deliver_on => Time.now.utc + state_retry_interval)
-    end
-
-    update_migration_task_progress(:on_exit)
     queue_signal(:wait_for_ip_address)
-  rescue StandardError => error
-    update_migration_task_progress(:on_error)
-    abort_conversion(error.message, 'error')
-  end
-
-  def poll_remove_snapshots_complete
-    update_migration_task_progress(:on_entry)
-    raise 'Removing snapshots timed out' if polling_timeout
-
-    async_task = MiqTask.find(context[:async_task_id_removing_snapshots])
-
-    if async_task.state == MiqTask::STATE_FINISHED
-      raise async_task.message unless async_task.status == MiqTask::STATUS_OK
-
-      update_migration_task_progress(:on_exit)
-      return queue_signal(:wait_for_ip_address)
-    end
-
-    update_migration_task_progress(:on_retry)
-    queue_signal(:poll_remove_snapshots_complete, :deliver_on => Time.now.utc + state_retry_interval)
-  rescue StandardError => error
-    update_migration_task_progress(:on_error)
-    abort_conversion(error.message, 'error')
   end
 
   def wait_for_ip_address
@@ -396,7 +361,6 @@ class InfraConversionJob < Job
     end
 
     update_migration_task_progress(:on_exit)
-    handover_to_automate
     queue_signal(:transform_vm)
   rescue StandardError => error
     update_migration_task_progress(:on_error)

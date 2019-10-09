@@ -9,17 +9,17 @@ module MiqReport::Generator
   include_concern 'Utilization'
 
   DATE_TIME_BREAK_SUFFIXES = [
-    [_("Hour"),              "hour"],
-    [_("Day"),               "day"],
-    [_("Week"),              "week"],
-    [_("Month"),             "month"],
-    [_("Quarter"),           "quarter"],
-    [_("Year"),              "year"],
-    [_("Hour of the Day"),   "hour_of_day"],
-    [_("Day of the Week"),   "day_of_week"],
-    [_("Day of the Month"),  "day_of_month"],
-    [_("Week of the Year"),  "week_of_year"],
-    [_("Month of the Year"), "month_of_year"]
+    [N_("Hour"),              "hour"],
+    [N_("Day"),               "day"],
+    [N_("Week"),              "week"],
+    [N_("Month"),             "month"],
+    [N_("Quarter"),           "quarter"],
+    [N_("Year"),              "year"],
+    [N_("Hour of the Day"),   "hour_of_day"],
+    [N_("Day of the Week"),   "day_of_week"],
+    [N_("Day of the Month"),  "day_of_month"],
+    [N_("Week of the Year"),  "week_of_year"],
+    [N_("Month of the Year"), "month_of_year"]
   ].freeze
 
   module ClassMethods
@@ -177,7 +177,7 @@ module MiqReport::Generator
       User.with_user(options[:user]) { _generate_table(options) }
     elsif options[:userid]
       userid = MiqReportResult.parse_userid(options[:userid])
-      user = User.find_by_userid(userid)
+      user = User.lookup_by_userid(userid)
       User.with_user(user, userid) { _generate_table(options) }
     else
       _generate_table(options)
@@ -258,7 +258,7 @@ module MiqReport::Generator
                             .where(options[:where_clause])
                             .where(:timestamp => time_range)
                             .includes(db_includes)
-                            .references(db_includes)
+                            .references(db_klass.includes_to_references(db_includes))
                             .includes(exp_includes || [])
                             .limit(options[:limit])
     results = Rbac.filtered(results, :class        => db,
@@ -354,7 +354,7 @@ module MiqReport::Generator
 
     curr_tz = Time.zone # Save current time zone setting
     userid = options[:userid].split("|").first if options[:userid]
-    user = User.find_by_userid(userid) if userid
+    user = User.lookup_by_userid(userid) if userid
 
     # TODO: user is nil from MiqWidget#generate_report_result due to passing the username as the second part of :userid, such as widget_id_735|admin...
     # Looks like widget generation for a user doesn't expect multiple timezones, could be an issue with MiqGroups.
@@ -517,7 +517,7 @@ module MiqReport::Generator
             if tag == "_none_"
               tags2desc[tag] = "[None]"
             else
-              entry = Classification.find_by_name([performance[:group_by_category], tag].join("/"))
+              entry = Classification.lookup_by_name([performance[:group_by_category], tag].join("/"))
               tags2desc[tag] = entry.nil? ? tag.titleize : entry.description
             end
           end
@@ -875,7 +875,7 @@ module MiqReport::Generator
   end
 
   def get_time_zone(default_tz = nil)
-    time_profile ? time_profile.tz || tz || default_tz : tz || default_tz
+    time_profile&.tz || tz || default_tz
   end
 
   private

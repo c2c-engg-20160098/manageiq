@@ -53,7 +53,6 @@ class Service < ApplicationRecord
   virtual_has_one    :reconfigure_dialog
   virtual_has_one    :user
 
-  before_validation :set_tenant_from_group
   before_create :update_attributes_from_dialog
 
   delegate :provision_dialog, :to => :miq_request, :allow_nil => true
@@ -64,6 +63,7 @@ class Service < ApplicationRecord
   include CiFeatureMixin
   include CustomActionsMixin
   include CustomAttributeMixin
+  include DeprecationMixin
   include ExternalUrlMixin
   include LifecycleMixin
   include Metric::CiMixin
@@ -88,15 +88,15 @@ class Service < ApplicationRecord
 
   validates :name, :presence => true
 
-  default_value_for :display, false
+  default_value_for :visible, false
   default_value_for :initiator, 'user'
   default_value_for :lifecycle_state, 'unprovisioned'
   default_value_for :retired, false
 
-  validates :display, :inclusion => { :in => [true, false] }
+  validates :visible, :inclusion => { :in => [true, false] }
   validates :retired, :inclusion => { :in => [true, false] }
 
-  scope :displayed, ->              { where(:display => true) }
+  scope :displayed, ->              { where(:visible => true) }
   scope :retired,   ->(bool = true) { where(:retired => bool) }
 
   supports :reconfigure do
@@ -108,6 +108,7 @@ class Service < ApplicationRecord
   alias parent_service parent
   alias_attribute :service, :parent
   virtual_belongs_to :service
+  deprecate_attribute :display, :visible
 
   def power_states
     vms.map(&:power_state)
@@ -379,10 +380,6 @@ class Service < ApplicationRecord
 
   def raise_provisioned_event
     MiqEvent.raise_evm_event(self, :service_provisioned)
-  end
-
-  def set_tenant_from_group
-    self.tenant_id = miq_group.tenant_id if miq_group
   end
 
   def tenant_identity
