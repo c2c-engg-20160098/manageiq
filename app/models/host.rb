@@ -1374,6 +1374,13 @@ class Host < ApplicationRecord
               Benchmark.realtime_block(:refresh_openstack_services) { refresh_openstack_services(ssu) }
             end
 
+            # C2C: Added condition for OTC cloud provider
+            if respond_to?(:refresh_otc_services)
+              _log.info("Refreshing Otc Services for #{log_target}")
+              task.update_status("Active", "Ok", "Refreshing Otc Services") if task
+              Benchmark.realtime_block(:refresh_otc_services) { refresh_otc_services(ssu) }
+            end
+            #
             save
           end
         rescue MiqException::MiqSshUtilHostKeyMismatch

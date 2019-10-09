@@ -46,6 +46,14 @@ MIQ_WORKER_TYPES = {
   "ManageIQ::Providers::Openstack::NetworkManager::EventCatcher"                => %i(manageiq_default),
   "ManageIQ::Providers::Openstack::NetworkManager::MetricsCollectorWorker"      => %i(manageiq_default),
   "ManageIQ::Providers::Openstack::StorageManager::CinderManager::EventCatcher" => %i(manageiq_default),
+  # C2C: Added code for OTC cloud provider
+  "ManageIQ::Providers::Otc::CloudManager::EventCatcher"                        => %i(manageiq_default),
+  "ManageIQ::Providers::Otc::CloudManager::MetricsCollectorWorker"              => %i(manageiq_default),
+  "ManageIQ::Providers::Otc::CloudManager::RefreshWorker"                       => %i(manageiq_default),
+  "ManageIQ::Providers::Otc::NetworkManager::EventCatcher"                      => %i(manageiq_default),
+  "ManageIQ::Providers::Otc::NetworkManager::MetricsCollectorWorker"            => %i(manageiq_default),
+  "ManageIQ::Providers::Otc::StorageManager::CinderManager::EventCatcher"       => %i(manageiq_default),
+  #
   "ManageIQ::Providers::Redfish::PhysicalInfraManager::EventCatcher"            => %i(manageiq_default),
   "ManageIQ::Providers::Redfish::PhysicalInfraManager::RefreshWorker"           => %i(manageiq_default),
   "ManageIQ::Providers::Redhat::InfraManager::EventCatcher"                     => %i(manageiq_default),
@@ -75,6 +83,7 @@ MIQ_WORKER_TYPES = {
   "MiqRemoteConsoleWorker"                                                      => %i(manageiq_default),
 }.freeze
 
+# C2C: Added conditions for OTC cloud provider (7)
 MIQ_WORKER_TYPES_IN_KILL_ORDER = %w(
   MiqEmsMetricsProcessorWorker
   ManageIQ::Providers::Azure::CloudManager::MetricsCollectorWorker
@@ -86,6 +95,8 @@ MIQ_WORKER_TYPES_IN_KILL_ORDER = %w(
   ManageIQ::Providers::Vmware::InfraManager::MetricsCollectorWorker
   ManageIQ::Providers::Openstack::CloudManager::MetricsCollectorWorker
   ManageIQ::Providers::Openstack::NetworkManager::MetricsCollectorWorker
+  ManageIQ::Providers::Otc::CloudManager::MetricsCollectorWorker
+  ManageIQ::Providers::Otc::NetworkManager::MetricsCollectorWorker
   ManageIQ::Providers::Redhat::NetworkManager::MetricsCollectorWorker
   ManageIQ::Providers::Openstack::InfraManager::MetricsCollectorWorker
   MiqReportingWorker
@@ -116,6 +127,8 @@ MIQ_WORKER_TYPES_IN_KILL_ORDER = %w(
   ManageIQ::Providers::Redhat::InfraManager::RefreshWorker
   ManageIQ::Providers::Openstack::CloudManager::RefreshWorker
   ManageIQ::Providers::Openstack::NetworkManager::RefreshWorker
+  ManageIQ::Providers::Otc::CloudManager::RefreshWorker
+  ManageIQ::Providers::Otc::NetworkManager::RefreshWorker
   ManageIQ::Providers::Redhat::NetworkManager::RefreshWorker
   ManageIQ::Providers::Openstack::InfraManager::RefreshWorker
   ManageIQ::Providers::StorageManager::CinderManager::RefreshWorker
@@ -136,6 +149,9 @@ MIQ_WORKER_TYPES_IN_KILL_ORDER = %w(
   ManageIQ::Providers::Openstack::CloudManager::EventCatcher
   ManageIQ::Providers::Openstack::NetworkManager::EventCatcher
   ManageIQ::Providers::Openstack::StorageManager::CinderManager::EventCatcher
+  ManageIQ::Providers::Otc::CloudManager::EventCatcher
+  ManageIQ::Providers::Otc::NetworkManager::EventCatcher
+  ManageIQ::Providers::Otc::StorageManager::CinderManager::EventCatcher
   ManageIQ::Providers::Redfish::PhysicalInfraManager::EventCatcher
   ManageIQ::Providers::Redhat::NetworkManager::EventCatcher
   ManageIQ::Providers::Openstack::InfraManager::EventCatcher

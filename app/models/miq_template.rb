@@ -39,8 +39,11 @@ class MiqTemplate < VmOrTemplate
   end
 
   def self.without_volume_templates
+    # C2C: Added condition for OTC cloud provider
     where.not(:type => ["ManageIQ::Providers::Openstack::CloudManager::VolumeTemplate",
-                        "ManageIQ::Providers::Openstack::CloudManager::VolumeSnapshotTemplate"])
+                        "ManageIQ::Providers::Openstack::CloudManager::VolumeSnapshotTemplate",
+                        "ManageIQ::Providers::Otc::CloudManager::VolumeTemplate",
+                        "ManageIQ::Providers::Otc::CloudManager::VolumeSnapshotTemplate"])
   end
 
   def active?; false; end

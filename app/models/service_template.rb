@@ -12,6 +12,7 @@ class ServiceTemplate < ApplicationRecord
     "storage"         => N_("Storage")
   }.freeze
 
+  # C2C: Added condition for OTC cloud provider
   CATALOG_ITEM_TYPES = {
     "amazon"                     => N_("Amazon"),
     "azure"                      => N_("Azure"),
@@ -23,6 +24,7 @@ class ServiceTemplate < ApplicationRecord
     "google"                     => N_("Google"),
     "microsoft"                  => N_("SCVMM"),
     "openstack"                  => N_("OpenStack"),
+    "otc"                        => N_("Otc"),
     "redhat"                     => N_("Red Hat Virtualization"),
     "vmware"                     => N_("VMware")
   }.freeze

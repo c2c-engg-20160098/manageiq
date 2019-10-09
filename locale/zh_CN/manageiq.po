@@ -4650,6 +4650,14 @@ msgstr[0] "云网络 (Microsoft Azure)"
 msgid "Cloud Network (OpenStack)"
 msgstr "云网络 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudNetwork
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudNetwork::Private
+#: ../config/dictionary_strings.rb:1792 ../config/dictionary_strings.rb:1796
+msgid "Cloud Network (Otc)"
+msgstr "云网络 (Otc)"
+
 #. TRANSLATORS: file: product/views/CloudNetwork.yaml
 #. TRANSLATORS: file:
 #. product/views/ManageIQ_Providers_CloudManager_OrchestrationStack.yaml
@@ -4700,6 +4708,19 @@ msgstr "云网络 (Microsoft Azure)"
 #: ../config/dictionary_strings.rb:2648
 msgid "Cloud Networks (OpenStack)"
 msgstr "云网络 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudNetwork
+#. (plural form)
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudNetwork::Private
+#. (plural form)
+#. TRANSLATORS: en.yml key:
+#. dictionary.table.manageiq_providers_otc_infra_manager_cloud_networks
+#: ../config/dictionary_strings.rb:1794 ../config/dictionary_strings.rb:1798
+#: ../config/dictionary_strings.rb:2648
+msgid "Cloud Networks (Otc)"
+msgstr "云网络 (Otc)"
 
 #: ../app/helpers/cloud_object_store_object_helper/textual_summary.rb:49
 msgid "Cloud Object Store Container"
@@ -4755,6 +4776,12 @@ msgid "Cloud Provider (OpenStack)"
 msgstr "云供应商 (OpenStack)"
 
 #. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager
+#: ../config/dictionary_strings.rb:1784
+msgid "Cloud Provider (Otc)"
+msgstr "云供应商 (Otc)"
+
+#. TRANSLATORS: en.yml key:
 #. dictionary.model.ManageIQ::Providers::Vmware::CloudManager
 #: ../config/dictionary_strings.rb:1812
 msgid "Cloud Provider (VMware vCloud)"
@@ -4783,6 +4810,12 @@ msgstr "云供应商 (Microsoft Azure)"
 #: ../config/dictionary_strings.rb:1786
 msgid "Cloud Providers (OpenStack)"
 msgstr "云供应商 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager (plural form)
+#: ../config/dictionary_strings.rb:1786
+msgid "Cloud Providers (Otc)"
+msgstr "云供应商 (Otc)"
 
 #. TRANSLATORS: en.yml key:
 #. dictionary.model.ManageIQ::Providers::Vmware::CloudManager (plural form)
@@ -4827,6 +4860,12 @@ msgstr[0] "云子网 (Microsoft Azure)"
 msgid "Cloud Subnet (OpenStack)"
 msgstr "云子网 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudSubnet
+#: ../config/dictionary_strings.rb:1920
+msgid "Cloud Subnet (Otc)"
+msgstr "云子网 (Otc)"
+
 #: ../app/helpers/ems_network_helper/textual_summary.rb:92
 #: ../app/helpers/cloud_tenant_helper/textual_summary.rb:127
 #: ../app/helpers/network_router_helper/textual_summary.rb:87
@@ -4864,6 +4903,13 @@ msgstr "云子网 (Microsoft Azure)"
 msgid "Cloud Subnets (OpenStack)"
 msgstr "云子网 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudSubnet
+#. (plural form)
+#: ../config/dictionary_strings.rb:1922
+msgid "Cloud Subnets (Otc)"
+msgstr "云子网 (Otc)"
+
 #. TRANSLATORS: file: product/views/CloudObjectStoreContainer-
 #. cloud_object_store_containers.yaml
 #. TRANSLATORS: file: product/views/CloudObjectStoreContainer.yaml
@@ -4890,6 +4936,12 @@ msgstr "云租户"
 msgid "Cloud Tenant (OpenStack)"
 msgstr "云租户 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::CloudTenant
+#: ../config/dictionary_strings.rb:1932
+msgid "Cloud Tenant (Otc)"
+msgstr "云租户 (Otc)"
+
 #: ../app/helpers/ems_network_helper/textual_summary.rb:105
 #: ../app/helpers/ems_cloud_helper/textual_summary.rb:140
 #: ../app/helpers/cloud_volume_helper/textual_summary.rb:71
@@ -4910,6 +4962,15 @@ msgstr "云租户"
 #: ../config/dictionary_strings.rb:1934 ../config/dictionary_strings.rb:2650
 msgid "Cloud Tenants (OpenStack)"
 msgstr "云租户 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::CloudTenant
+#. (plural form)
+#. TRANSLATORS: en.yml key:
+#. dictionary.table.manageiq_providers_otc_cloud_manager_cloud_tenant
+#: ../config/dictionary_strings.rb:1934 ../config/dictionary_strings.rb:2650
+msgid "Cloud Tenants (Otc)"
+msgstr "云租户 (Otc)"
 
 #: ../app/helpers/application_helper/title.rb:30
 msgid "Cloud Topology"
@@ -16835,11 +16896,24 @@ msgid "External Cloud Network (OpenStack)"
 msgstr "外部云网络 (OpenStack)"
 
 #. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudNetwork::Public
+#: ../config/dictionary_strings.rb:1800
+msgid "External Cloud Network (Otc)"
+msgstr "外部云网络 (Otc)"
+
+#. TRANSLATORS: en.yml key:
 #. dictionary.model.ManageIQ::Providers::Openstack::NetworkManager::CloudNetwork::Public
 #. (plural form)
 #: ../config/dictionary_strings.rb:1802
 msgid "External Cloud Networks (OpenStack)"
 msgstr "外部云网络 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::CloudNetwork::Public
+#. (plural form)
+#: ../config/dictionary_strings.rb:1802
+msgid "External Cloud Networks (Otc)"
+msgstr "外部云网络 (Otc)"
 
 #: ../app/models/miq_alert.rb:480
 msgid "External Prometheus Alerts"
@@ -16985,6 +17059,10 @@ msgstr "名称"
 #: ../config/model_attributes.rb:1694
 msgid "FileDepot|Openstack region"
 msgstr "FileDepot|Openstack 区域"
+
+#: ../config/model_attributes.rb:1694
+msgid "FileDepot|Otc region"
+msgstr "FileDepot|Otc 区域"
 
 #: ../config/model_attributes.rb:1695
 msgid "FileDepot|Region description"
@@ -17409,6 +17487,12 @@ msgstr[0] "类型 (Microsoft Azure)"
 msgid "Flavor (OpenStack)"
 msgstr "类型 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::Flavor
+#: ../config/dictionary_strings.rb:1712
+msgid "Flavor (Otc)"
+msgstr "类型 (Otc)"
+
 #. TRANSLATORS: file: product/reports/180_Configuration Management -
 #. Instances/010 Amazon - Active VMs.yaml
 #: ../config/yaml_strings.rb:5658
@@ -17451,6 +17535,13 @@ msgstr "类型 (Microsoft Azure)"
 #: ../config/dictionary_strings.rb:1714
 msgid "Flavors (OpenStack)"
 msgstr "类型 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::Flavor
+#. (plural form)
+#: ../config/dictionary_strings.rb:1714
+msgid "Flavors (Otc)"
+msgstr "类型 (Otc)"
 
 #: ../config/model_attributes.rb:1779
 msgid "Flavor|Block storage based only"
@@ -17569,6 +17660,12 @@ msgstr "浮动 IP (Microsoft Azure)"
 msgid "Floating IP (OpenStack)"
 msgstr "浮动 IP (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::FloatingIp
+#: ../config/dictionary_strings.rb:1908
+msgid "Floating IP (Otc)"
+msgstr "浮动 IP (Otc)"
+
 #: ../app/presenters/menu/default_menu.rb:140
 #: ../app/helpers/ems_network_helper/textual_summary.rb:76
 #: ../app/helpers/cloud_tenant_helper/textual_summary.rb:111
@@ -17601,6 +17698,13 @@ msgstr "浮动 IP (Microsoft Azure)"
 #: ../config/dictionary_strings.rb:1910
 msgid "Floating IPs (OpenStack)"
 msgstr "浮动 IP (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::FloatingIp
+#. (plural form)
+#: ../config/dictionary_strings.rb:1910
+msgid "Floating IPs (Otc)"
+msgstr "浮动 IP (Otc)"
 
 #. TRANSLATORS: en.yml key:
 #. dictionary.model.ManageIQ::Providers::Google::NetworkManager::FloatingIp
@@ -18730,6 +18834,12 @@ msgstr "健康状态代码"
 
 #. TRANSLATORS: en.yml key:
 #. dictionary.model.ManageIQ::Providers::Openstack::CloudManager::OrchestrationTemplate
+#: ../config/dictionary_strings.rb:2168
+msgid "Heat Template"
+msgstr "Heat 模板"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::OrchestrationTemplate
 #: ../config/dictionary_strings.rb:2168
 msgid "Heat Template"
 msgstr "Heat 模板"
@@ -20350,6 +20460,12 @@ msgid "Instance (OpenStack)"
 msgstr "实例 (OpenStack)"
 
 #. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::Vm
+#: ../config/dictionary_strings.rb:1684
+msgid "Instance (Otc)"
+msgstr "实例 (Otc)"
+
+#. TRANSLATORS: en.yml key:
 #. dictionary.model.ManageIQ::Providers::Vmware::CloudManager::Vm
 #: ../config/dictionary_strings.rb:1696
 msgid "Instance (VMware vCloud)"
@@ -20453,6 +20569,13 @@ msgstr "实例 (Microsoft Azure)"
 #: ../config/dictionary_strings.rb:1686
 msgid "Instances (OpenStack)"
 msgstr "实例 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::Vm (plural
+#. form)
+#: ../config/dictionary_strings.rb:1686
+msgid "Instances (Otc)"
+msgstr "实例 (Otc)"
 
 #. TRANSLATORS: en.yml key:
 #. dictionary.model.ManageIQ::Providers::Vmware::CloudManager::Vm (plural
@@ -28466,6 +28589,12 @@ msgstr[0] "网络端口 (Microsoft Azure)"
 msgid "Network Port (OpenStack)"
 msgstr "网络端口 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::NetworkPort
+#: ../config/dictionary_strings.rb:1964
+msgid "Network Port (Otc)"
+msgstr "网络端口 (Otc)"
+
 #: ../app/presenters/menu/default_menu.rb:141
 #: ../app/helpers/ems_network_helper/textual_summary.rb:84
 #: ../app/helpers/cloud_tenant_helper/textual_summary.rb:119
@@ -28505,6 +28634,13 @@ msgstr "网络端口 (Microsoft Azure)"
 msgid "Network Ports (OpenStack)"
 msgstr "网络端口 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::NetworkPort
+#. (plural form)
+#: ../config/dictionary_strings.rb:1966
+msgid "Network Ports (Otc)"
+msgstr "网络端口 (Otc)"
+
 #. TRANSLATORS: file: product/views/CloudNetwork.yaml
 #. TRANSLATORS: file: product/views/CloudSubnet.yaml
 #. TRANSLATORS: file: product/views/FloatingIp.yaml
@@ -28533,6 +28669,12 @@ msgstr[0] "网络供应商 (Google)"
 msgid "Network Provider (OpenStack)"
 msgstr "网络供应商 (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager
+#: ../config/dictionary_strings.rb:1788
+msgid "Network Provider (Otc)"
+msgstr "网络供应商 (Otc)"
+
 #. TRANSLATORS: file: product/views/ManageIQ_Providers_NetworkManager.yaml
 #: ../config/yaml_strings.rb:1518
 msgid "Network Providers"
@@ -28556,6 +28698,13 @@ msgstr "网络供应商 (Google)"
 #: ../config/dictionary_strings.rb:1790
 msgid "Network Providers (OpenStack)"
 msgstr "网络供应商 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager (plural
+#. form)
+#: ../config/dictionary_strings.rb:1790
+msgid "Network Providers (Otc)"
+msgstr "网络供应商 (Otc)"
 
 #. TRANSLATORS: file: product/views/NetworkRouter.yaml
 #: ../app/helpers/application_helper/toolbar/network_routers_center.rb:36
@@ -28588,6 +28737,12 @@ msgstr "网络路由器 (Microsoft Azure)"
 #: ../config/dictionary_strings.rb:1924
 msgid "Network Router (OpenStack)"
 msgstr "网络路由器 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::NetworkRouter
+#: ../config/dictionary_strings.rb:1924
+msgid "Network Router (Otc)"
+msgstr "网络路由器 (Otc)"
 
 #: ../app/presenters/menu/default_menu.rb:138
 #: ../app/helpers/application_helper/toolbar/network_routers_center.rb:37
@@ -28627,6 +28782,13 @@ msgstr "网络路由器 (Microsoft Azure)"
 #: ../config/dictionary_strings.rb:1926
 msgid "Network Routers (OpenStack)"
 msgstr "网络路由器 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::NetworkRouter
+#. (plural form)
+#: ../config/dictionary_strings.rb:1926
+msgid "Network Routers (Otc)"
+msgstr "网络路由器 (Otc)"
 
 #. TRANSLATORS: file: product/reports/110_Configuration Management -
 #. Hosts/080_Network information.yaml
@@ -29483,10 +29645,20 @@ msgstr "OpenStack"
 msgid "OpenStack Swift"
 msgstr "OpenStack Swift"
 
+#. TRANSLATORS: en.yml key: dictionary.model.FileDepotSwift
+#: ../config/dictionary_strings.rb:1448
+msgid "Otc Swift"
+msgstr "Otc Swift"
+
 #. TRANSLATORS: en.yml key: dictionary.model.FileDepotSwift (plural form)
 #: ../config/dictionary_strings.rb:1450
 msgid "OpenStack Swifts"
 msgstr "OpenStack Swift"
+
+#. TRANSLATORS: en.yml key: dictionary.model.FileDepotSwift (plural form)
+#: ../config/dictionary_strings.rb:1450
+msgid "Otc Swifts"
+msgstr "Otc Swift"
 
 #: ../app/models/manageiq/providers/ansible_tower/shared/automation_manager/openstack_credential.rb:34
 msgid ""
@@ -35534,6 +35706,12 @@ msgstr "安全组（Microsoft Azure）"
 msgid "Security Group (OpenStack)"
 msgstr "Security Group (OpenStack)"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::SecurityGroup
+#: ../config/dictionary_strings.rb:1888
+msgid "Security Group (Otc)"
+msgstr "Security Group (Otc)"
+
 #: ../app/views/security_group/_common_new_edit.html.haml:6
 msgid "Security Group Name"
 msgstr "安全组名称"
@@ -35586,6 +35764,13 @@ msgstr "安全组（Microsoft Azure）"
 #: ../config/dictionary_strings.rb:1890
 msgid "Security Groups (OpenStack)"
 msgstr "安全组 (OpenStack)"
+
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::NetworkManager::SecurityGroup
+#. (plural form)
+#: ../config/dictionary_strings.rb:1890
+msgid "Security Groups (Otc)"
+msgstr "安全组 (Otc)"
 
 #: ../app/models/manageiq/providers/ansible_tower/shared/automation_manager/amazon_credential.rb:20
 msgid "Security Token Service(STS) Token for this credential"
@@ -41742,6 +41927,12 @@ msgstr "VMware 虚拟机摘要"
 msgid "VNF Template"
 msgstr "VNF 模板"
 
+#. TRANSLATORS: en.yml key:
+#. dictionary.model.ManageIQ::Providers::Otc::CloudManager::VnfdTemplate
+#: ../config/dictionary_strings.rb:2176
+msgid "VNF Template"
+msgstr "VNF 模板"
+
 #: ../app/presenters/tree_builder_orchestration_templates.rb:39
 #: ../app/presenters/tree_builder_orchestration_templates.rb:41
 msgid "VNF Templates"
@@ -44746,7 +44937,15 @@ msgstr "dir 必需是 %{directory} 之一"
 msgid "ems cannot be found"
 msgstr "未找到 ems"
 
+#: ../app/models/manageiq/providers/otc/cloud_manager/host_aggregate.rb:34
+msgid "ems cannot be found"
+msgstr "未找到 ems"
+
 #: ../app/models/manageiq/providers/openstack/cloud_manager/host_aggregate.rb:32
+msgid "ems cannot be nil"
+msgstr "ems 不能为空"
+
+#: ../app/models/manageiq/providers/otc/cloud_manager/host_aggregate.rb:32
 msgid "ems cannot be nil"
 msgstr "ems 不能为空"
 
@@ -44783,6 +44982,10 @@ msgid "ext_management_system cannot be found"
 msgstr "未找到 ext_management_system"
 
 #: ../app/models/manageiq/providers/openstack/cloud_manager/cloud_volume_snapshot.rb:39
+msgid "ext_management_system cannot be nil"
+msgstr "ext_management_system 不能为空"
+
+#: ../app/models/manageiq/providers/otc/cloud_manager/cloud_volume_snapshot.rb:39
 msgid "ext_management_system cannot be nil"
 msgstr "ext_management_system 不能为空"
 
@@ -45941,8 +46144,18 @@ msgstr "无法关闭。已停止。"
 msgid "Host ID cannot be nil"
 msgstr "主机 ID 不能为空"
 
+#: ../app/models/manageiq/providers/otc/cloud_manager/host_aggregate.rb:170
+#: ../app/models/manageiq/providers/otc/cloud_manager/host_aggregate.rb:200
+msgid "Host ID cannot be nil"
+msgstr "主机 ID 不能为空"
+
 #: ../app/models/manageiq/providers/openstack/cloud_manager/host_aggregate.rb:172
 #: ../app/models/manageiq/providers/openstack/cloud_manager/host_aggregate.rb:202
+msgid "Host cannot be found"
+msgstr "未找到主机"
+
+#: ../app/models/manageiq/providers/otc/cloud_manager/host_aggregate.rb:172
+#: ../app/models/manageiq/providers/otc/cloud_manager/host_aggregate.rb:202
 msgid "Host cannot be found"
 msgstr "未找到主机"
 
@@ -45955,8 +46168,18 @@ msgstr "不支持迁移操作。"
 msgid "Subnet ID cannot be nil"
 msgstr "子网 ID 不能为空"
 
+#: ../app/models/manageiq/providers/otc/network_manager/network_router.rb:78
+#: ../app/models/manageiq/providers/otc/network_manager/network_router.rb:108
+msgid "Subnet ID cannot be nil"
+msgstr "子网 ID 不能为空"
+
 #: ../app/models/manageiq/providers/openstack/network_manager/network_router.rb:80
 #: ../app/models/manageiq/providers/openstack/network_manager/network_router.rb:110
+msgid "Subnet cannot be found"
+msgstr "未找到子网"
+
+#: ../app/models/manageiq/providers/otc/network_manager/network_router.rb:80
+#: ../app/models/manageiq/providers/otc/network_manager/network_router.rb:110
 msgid "Subnet cannot be found"
 msgstr "未找到子网"
 
@@ -45964,7 +46187,16 @@ msgstr "未找到子网"
 msgid "Tenant mapping is disabled on the Provider"
 msgstr "供应商禁用了租户映射"
 
+#: ../app/models/manageiq/providers/otc/cloud_manager.rb:39
+msgid "Tenant mapping is disabled on the Provider"
+msgstr "供应商禁用了租户映射"
+
 #: ../app/models/manageiq/providers/openstack/cloud_manager.rb:41
+msgid ""
+"Tenant mapping is supported only when CloudTenant exists on the CloudManager"
+msgstr "只有 CloudTenant 存在于 CloudManager 上时，才支持租户映射"
+
+#: ../app/models/manageiq/providers/otc/cloud_manager.rb:41
 msgid ""
 "Tenant mapping is supported only when CloudTenant exists on the CloudManager"
 msgstr "只有 CloudTenant 存在于 CloudManager 上时，才支持租户映射"
@@ -45974,8 +46206,18 @@ msgstr "只有 CloudTenant 存在于 CloudManager 上时，才支持租户映射
 msgid "The Cloud Network is not connected to an active %{table}"
 msgstr "云网络未连接至活动的 %{table}"
 
+#: ../app/models/manageiq/providers/otc/network_manager/cloud_network.rb:8
+#: ../app/models/manageiq/providers/otc/network_manager/cloud_network.rb:16
+msgid "The Cloud Network is not connected to an active %{table}"
+msgstr "云网络未连接至活动的 %{table}"
+
 #: ../app/models/manageiq/providers/openstack/network_manager/floating_ip.rb:9
 #: ../app/models/manageiq/providers/openstack/network_manager/floating_ip.rb:17
+msgid "The Floating Ip is not connected to an active %{table}"
+msgstr "浮动 IP 未连接至活动的 %{table}"
+
+#: ../app/models/manageiq/providers/otc/network_manager/floating_ip.rb:9
+#: ../app/models/manageiq/providers/otc/network_manager/floating_ip.rb:17
 msgid "The Floating Ip is not connected to an active %{table}"
 msgstr "浮动 IP 未连接至活动的 %{table}"
 
@@ -45984,7 +46226,16 @@ msgid ""
 "The Instance cannot be resized, current state has to be active or shutoff."
 msgstr "实例不能调整大小，当前状态必须为活动或关闭。"
 
+#: ../app/models/manageiq/providers/otc/cloud_manager/vm/resize.rb:8
+msgid ""
+"The Instance cannot be resized, current state has to be active or shutoff."
+msgstr "实例不能调整大小，当前状态必须为活动或关闭。"
+
 #: ../app/models/manageiq/providers/openstack/cloud_manager/auth_key_pair.rb:17
+msgid "The Keypair is not connected to an active %{table}"
+msgstr "密钥对没有连接至活动的 %{table}"
+
+#: ../app/models/manageiq/providers/otc/cloud_manager/auth_key_pair.rb:17
 msgid "The Keypair is not connected to an active %{table}"
 msgstr "密钥对没有连接至活动的 %{table}"
 
@@ -45993,7 +46244,16 @@ msgstr "密钥对没有连接至活动的 %{table}"
 msgid "The Security Group is not connected to an active %{table}"
 msgstr "安全组未连接至活动的 %{table}"
 
+#: ../app/models/manageiq/providers/otc/network_manager/security_group.rb:6
+#: ../app/models/manageiq/providers/otc/network_manager/security_group.rb:14
+msgid "The Security Group is not connected to an active %{table}"
+msgstr "安全组未连接至活动的 %{table}"
+
 #: ../app/models/manageiq/providers/openstack/network_manager/cloud_subnet.rb:13
+msgid "The subnet has an active %{table}"
+msgstr "该子网有活动的 %{table}"
+
+#: ../app/models/manageiq/providers/otc/network_manager/cloud_subnet.rb:13
 msgid "The subnet has an active %{table}"
 msgstr "该子网有活动的 %{table}"
 
@@ -46002,7 +46262,16 @@ msgstr "该子网有活动的 %{table}"
 msgid "The subnet is not connected to an active %{table}"
 msgstr "该子网未连接至活动的 %{table}"
 
+#: ../app/models/manageiq/providers/otc/network_manager/cloud_subnet.rb:8
+#: ../app/models/manageiq/providers/otc/network_manager/cloud_subnet.rb:20
+msgid "The subnet is not connected to an active %{table}"
+msgstr "该子网未连接至活动的 %{table}"
+
 #: ../app/models/manageiq/providers/openstack/cloud_manager/vm/associate_ip.rb:8
+msgid "There are no %{floating_ips} available to this %{instance}."
+msgstr "这个 %{instance} 没有可用的 %{floating_ips} 。"
+
+#: ../app/models/manageiq/providers/otc/cloud_manager/vm/associate_ip.rb:8
 msgid "There are no %{floating_ips} available to this %{instance}."
 msgstr "这个 %{instance} 没有可用的 %{floating_ips} 。"
 
@@ -46010,7 +46279,15 @@ msgstr "这个 %{instance} 没有可用的 %{floating_ips} 。"
 msgid "This %{instance} does not have any associated %{floating_ips}"
 msgstr "这个 %{instance} 没有任何关联的 %{floating_ips}"
 
+#: ../app/models/manageiq/providers/otc/cloud_manager/vm/associate_ip.rb:17
+msgid "This %{instance} does not have any associated %{floating_ips}"
+msgstr "这个 %{instance} 没有任何关联的 %{floating_ips}"
+
 #: ../app/models/manageiq/providers/openstack/cloud_manager/cloud_volume_snapshot.rb:37
+msgid "cloud_volume cannot be nil"
+msgstr "cloud_volume 不能为空"
+
+#: ../app/models/manageiq/providers/otc/cloud_manager/cloud_volume_snapshot.rb:37
 msgid "cloud_volume cannot be nil"
 msgstr "cloud_volume 不能为空"
 
@@ -63886,9 +64163,17 @@ msgstr "OpenStack 基础架构"
 msgid "OpenStack Service Status"
 msgstr "OpenStack 服务状态"
 
+#: ../app/helpers/host_helper/textual_summary.rb:76
+msgid "Otc Service Status"
+msgstr "Otc 服务状态"
+
 #: ../app/helpers/ems_cluster_helper/textual_summary.rb:45
 msgid "OpenStack Status"
 msgstr "OpenStack 状态"
+
+#: ../app/helpers/ems_cluster_helper/textual_summary.rb:45
+msgid "Otc Status"
+msgstr "Otc 状态"
 
 #: ../app/helpers/application_helper/toolbar/x_vm_center.rb:270
 msgid ""
@@ -63905,6 +64190,10 @@ msgstr "Openscap 规则结果"
 msgid "Openstack Hardware"
 msgstr "Openstack 硬件"
 
+#: ../app/helpers/host_helper/textual_summary.rb:81
+msgid "Otc Hardware"
+msgstr "Otc 硬件"
+
 #: ../app/views/shared/views/ems_common/angular/_form.html.haml:204
 msgid "Openstack Infra Provider"
 msgstr "Openstack Infra 供应商"
@@ -63912,6 +64201,10 @@ msgstr "Openstack Infra 供应商"
 #: ../app/helpers/host_helper/textual_summary.rb:461
 msgid "Openstack Nova Scheduler"
 msgstr "Openstack Nova 调度器"
+
+#: ../app/helpers/host_helper/textual_summary.rb:461
+msgid "Otc Nova Scheduler"
+msgstr "Otc Nova 调度器"
 
 #: ../app/helpers/container_image_helper/textual_summary.rb:58
 #: ../app/helpers/container_node_helper/textual_summary.rb:121
@@ -76618,6 +76911,10 @@ msgstr "正在加载迁移计划..."
 #: ../app/javascript/react/screens/App/Overview/screens/PlanWizard/components/PlanWizardInstancePropertiesStep/PlanWizardInstancePropertiesStep.js:72
 msgid "Loading OpenStack Properties..."
 msgstr "正在加载 OpenStack 属性..."
+
+#: ../app/javascript/react/screens/App/Overview/screens/PlanWizard/components/PlanWizardInstancePropertiesStep/PlanWizardInstancePropertiesStep.js:72
+msgid "Loading Otc Properties..."
+msgstr "正在加载 Otc 属性..."
 
 #: ../app/javascript/react/screens/App/common/ModalWizard/ModalWizardBody.js:122
 msgid "Loading Wizard..."

@@ -11,13 +11,17 @@ class ManageIQ::Providers::CloudManager::Template < ::MiqTemplate
     !genealogy_parent.nil?
   end
 
+  # C2C: Added conditions for OTC cloud provider
   def self.eligible_for_provisioning
     super.where(:type => %w(ManageIQ::Providers::Amazon::CloudManager::Template
                             ManageIQ::Providers::Openstack::CloudManager::Template
                             ManageIQ::Providers::Azure::CloudManager::Template
                             ManageIQ::Providers::Google::CloudManager::Template
                             ManageIQ::Providers::Openstack::CloudManager::VolumeTemplate
-                            ManageIQ::Providers::Openstack::CloudManager::VolumeSnapshotTemplate))
+                            ManageIQ::Providers::Openstack::CloudManager::VolumeSnapshotTemplate
+                            ManageIQ::Providers::Otc::CloudManager::Template
+                            ManageIQ::Providers::Otc::CloudManager::VolumeTemplate
+                            ManageIQ::Providers::Otc::CloudManager::VolumeSnapshotTemplate))
   end
 
   def self.class_by_ems(ext_management_system)

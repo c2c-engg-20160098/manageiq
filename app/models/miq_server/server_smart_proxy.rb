@@ -76,11 +76,15 @@ module MiqServer::ServerSmartProxy
       # on the size of the image, but that information isn't directly available.
       #
       timeout_adj = 1
+      # C2C: Added condition for OTC cloud provider
       if ost.method_name == "scan_metadata"
         klass = ost.target_type.constantize
         target = klass.find(ost.target_id)
         if target.kind_of?(ManageIQ::Providers::Openstack::CloudManager::Vm) ||
            target.kind_of?(ManageIQ::Providers::Openstack::CloudManager::Template)
+          timeout_adj = 4
+        elsif target.kind_of?(ManageIQ::Providers::Otc::CloudManager::Vm) ||
+            target.kind_of?(ManageIQ::Providers::Otc::CloudManager::Template)
           timeout_adj = 4
         elsif target.kind_of?(ManageIQ::Providers::Azure::CloudManager::Vm) ||
               target.kind_of?(ManageIQ::Providers::Azure::CloudManager::Template)

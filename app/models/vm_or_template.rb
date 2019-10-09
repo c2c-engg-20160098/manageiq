@@ -37,6 +37,7 @@ class VmOrTemplate < ApplicationRecord
            :class_name => "CustomAttribute"
   has_many :counterparts, :as => :counterpart, :class_name => "ConfiguredSystem", :dependent => :nullify
 
+  # C2C: Added conditions for OTC cloud provider
   VENDOR_TYPES = {
     # DB            Displayed
     "azure"       => "Azure",
@@ -48,6 +49,7 @@ class VmOrTemplate < ApplicationRecord
     "amazon"      => "Amazon",
     "redhat"      => "RedHat",
     "openstack"   => "OpenStack",
+    "otc"         => "Otc",
     "google"      => "Google",
     "kubevirt"    => "KubeVirt",
     "unknown"     => "Unknown"

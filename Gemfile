@@ -22,7 +22,13 @@ def manageiq_plugin(plugin_name)
   end
 end
 
-manageiq_plugin "manageiq-schema"
+def c2c_manageiq_plugin(plugin_name, branch_name)
+  unless dependencies.detect { |d| d.name == plugin_name }
+    gem plugin_name, :git => "https://github.com/c2c-engg-20160098/#{plugin_name}", :branch => branch_name
+  end
+end
+
+c2c_manageiq_plugin "manageiq-schema", "c2c_dev"
 
 # Unmodified gems
 gem "activerecord-virtual_attributes", "~>1.4.0"
@@ -90,6 +96,10 @@ gem "american_date"
 # This default is used to automatically require all of our gems in processes that don't specify which bundler groups they want.
 #
 ### providers
+#
+#gem "manageiq-providers-otc" ,:require=>false, :git=>"https://github.com/c2c-engg-20160098/manageiq-providers-otc.git"
+c2c_manageiq_plugin "manageiq-providers-otc", "master"
+
 group :amazon, :manageiq_default do
   manageiq_plugin "manageiq-providers-amazon"
   gem "amazon_ssa_support",                          :require => false, :git => "https://github.com/ManageIQ/amazon_ssa_support.git", :branch => "master" # Temporary dependency to be moved to manageiq-providers-amazon when officially release
@@ -209,8 +219,10 @@ group :consumption, :manageiq_default do
 end
 
 group :ui_dependencies do # Added to Bundler.require in config/application.rb
-  manageiq_plugin "manageiq-decorators"
-  manageiq_plugin "manageiq-ui-classic"
+  # manageiq_plugin "manageiq-decorators"
+  # manageiq_plugin "manageiq-ui-classic"
+  c2c_manageiq_plugin "manageiq-decorators", "c2c_dev"
+  c2c_manageiq_plugin "manageiq-ui-classic", "c2c_dev"
   # Modified gems (forked on Github)
   gem "jquery-rjs",                   "=0.1.1",                       :git => "https://github.com/ManageIQ/jquery-rjs.git", :tag => "v0.1.1-1"
 end

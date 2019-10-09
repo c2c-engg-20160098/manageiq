@@ -387,6 +387,7 @@ module MiqProvisionQuotaMixin
     return flavor_obj.try(:memory) if cloud
     request = prov.kind_of?(MiqRequest) ? prov : prov.miq_request
     memory = request.get_option(:vm_memory).to_i
-    %w(amazon openstack google).include?(vendor) ? memory : memory.megabytes
+    # C2C: Added condition for OTC cloud provider
+    %w(amazon openstack google otc).include?(vendor) ? memory : memory.megabytes
   end
 end
