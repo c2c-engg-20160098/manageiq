@@ -145,6 +145,7 @@ module SupportsFeatureMixin
     :volume_multiattachment              => 'Volume Multiattachment',
     :volume_resizing                     => 'Volume Resizing',
     :change_password                     => 'Change Password',
+    :vm_destroy                          => 'Deleting a VM',  # Added by C2C provider team: to resolve error during bin/setup
     :volume_availability_zones           => 'Volume Availability Zones',
     :assume_role                         => 'Assume Role',
   }.freeze
