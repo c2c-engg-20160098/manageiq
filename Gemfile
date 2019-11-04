@@ -1,4 +1,4 @@
-raise "Ruby versions < 2.4.0 are unsupported!" if RUBY_VERSION < "2.4.0"
+raise "Ruby versions < 2.5.3 are unsupported!" if RUBY_VERSION < "2.5.3"
 raise "Ruby versions >= 2.7.0 are unsupported!" if RUBY_VERSION >= "2.7.0"
 
 source 'https://rubygems.org'
@@ -35,7 +35,6 @@ gem "activerecord-virtual_attributes", "~>1.4.0"
 gem "activerecord-session_store",     "~>1.1"
 gem "acts_as_tree",                   "~>2.7" # acts_as_tree needs to be required so that it loads before ancestry
 gem "ancestry",                       "~>3.0.7",       :require => false
-gem "aws-sdk-ec2",                    "~>1.0",         :require => false # For FileDepotS3
 gem "aws-sdk-s3",                     "~>1.0",         :require => false # For FileDepotS3
 gem "bcrypt",                         "~> 3.1.10",     :require => false
 gem "bundler",                        ">=1.15",        :require => false
