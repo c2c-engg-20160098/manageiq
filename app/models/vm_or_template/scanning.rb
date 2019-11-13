@@ -37,6 +37,25 @@ module VmOrTemplate::Scanning
   end
 
   #
+  # Default Adjustment Multiplier is 1 (i.e. no change to timeout)
+  #   since this is a multiplier, timeout * 1 = timeout
+  #
+  # Subclasses MAY choose to override this
+  #
+  module ClassMethods
+    def scan_timeout_adjustment_multiplier
+      1
+    end
+  end
+
+  #
+  # Instance method delegates to class method for convenience
+  #
+  def scan_timeout_adjustment_multiplier
+    self.class.scan_timeout_adjustment_multiplier
+  end
+
+  #
   # Subclasses need to override this method if a storage association
   # is not required for SSA.
   #
@@ -44,11 +63,10 @@ module VmOrTemplate::Scanning
     true
   end
 
-  # TODO: Vmware specfic
+  #
+  # Provider subclasses should override this method, if they support SmartState Analysis
+  #
   def require_snapshot_for_scan?
-    return false unless self.runnable?
-    return false if ['redhat'].include?(vendor.downcase)
-    return false if host && host.platform == "windows"
-    true
+    raise NotImplementedError, "must be implemented in provider subclass"
   end
 end
