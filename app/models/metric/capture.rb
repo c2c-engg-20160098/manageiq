@@ -8,6 +8,12 @@ module Metric::Capture
   REALTIME_PRIORITY = HOURLY_PRIORITY = DAILY_PRIORITY = MiqQueue::NORMAL_PRIORITY
   HISTORICAL_PRIORITY = MiqQueue::LOW_PRIORITY
 
+  # @param [String[ capture interval
+  # @return [Integer] MiqQueue priority level for this message
+  def self.interval_priority(interval)
+    interval == "historical" ? MiqQueue::LOW_PRIORITY : MiqQueue::NORMAL_PRIORITY
+  end
+
   def self.capture_cols
     @capture_cols ||= Metric.columns_hash.collect { |c, h| c.to_sym if h.type == :float && c[0, 7] != "derived" }.compact
   end
@@ -57,27 +63,45 @@ module Metric::Capture
     _log.info("Queueing performance capture...Complete")
   end
 
-  def self.perf_capture_gap(start_time, end_time, zone_id = nil)
+  def self.perf_capture_gap(start_time, end_time, zone_id = nil, ems_id = nil)
+    raise ArgumentError, "end_time and start_time must be specified" if start_time.nil? || end_time.nil?
+    raise _("Start time must be earlier than End time") if start_time > end_time
+
     _log.info("Queueing performance capture for range: [#{start_time} - #{end_time}]...")
 
-    zone = Zone.find(zone_id) if zone_id
-    targets = Metric::Targets.capture_targets(zone, :exclude_storages => true)
-    targets.each { |target| target.perf_capture_queue('historical', :start_time => start_time, :end_time => end_time, :zone => zone) }
+    emses = if ems_id
+              [ExtManagementSystem.find(ems_id)]
+            elsif zone_id
+              Zone.find(zone_id).ems_metrics_collectable
+            else
+              MiqServer.my_server.zone.ems_metrics_collectable
+            end
+    emses.each do |ems|
+      targets = Metric::Targets.capture_ems_targets(ems, :exclude_storages => true)
+      target_options = Hash.new { |_n, _v| {:start_time => start_time.utc, :end_time => end_time.utc, :zone => ems.zone, :interval => 'historical'} }
+      queue_captures(targets, target_options)
+    end
 
     _log.info("Queueing performance capture for range: [#{start_time} - #{end_time}]...Complete")
   end
 
-  def self.perf_capture_gap_queue(start_time, end_time, zone = nil)
-    item = {
+  # called by the UI
+  # @param zone [Zone] zone where the ems resides
+  # @param ems [ExtManagementSystem] ems to capture collect
+  #
+  # pass at least one of these, since we need to specify which ems needs a gap to run
+  # Prefer to use the ems over the zone for perf_capture_gap
+  def self.perf_capture_gap_queue(start_time, end_time, zone, ems = nil)
+    zone ||= ems.zone
+
+    MiqQueue.put(
       :class_name  => name,
       :method_name => "perf_capture_gap",
       :role        => "ems_metrics_coordinator",
       :priority    => MiqQueue::HIGH_PRIORITY,
-      :args        => [start_time, end_time, zone.try(:id)]
-    }
-    item[:zone] = zone.name if zone
-
-    MiqQueue.put(item)
+      :zone        => zone.name,
+      :args        => [start_time, end_time, zone.id, ems&.id]
+    )
   end
 
   def self.filter_perf_capture_now(targets, target_options)
@@ -133,22 +157,17 @@ module Metric::Capture
   # 1. Only calculate rollups for Hosts
   # 2. Some Hosts have an EmsCluster as a parent, others have none.
   # 3. Only Hosts with a parent are rolled up.
+  # 4. Only used for VMWare
   # @param [Array<Host|VmOrTemplate|Storage>] @targets The nodes to rollup
-  # @option options :force Force capture if this node is a host
   # @returns Hash<String,Array<Host>>
-  #   e.g.: {"EmsCluster:4"=>[Host:4], "EmsCluster:5"=>[Host:1, Host:2]}
-  def self.calc_targets_by_rollup_parent(targets, options = {})
+  #   e.g.: {EmsCluster:4=>[Host:4], EmsCluster:5=>[Host:1, Host:2]}
+  def self.calc_targets_by_rollup_parent(targets)
     realtime_targets = targets.select do |target|
       target.kind_of?(Host) &&
-        perf_target_to_interval_name(target) == "realtime" &&
-        (options[:force] || perf_capture_now?(target))
+        perf_capture_now?(target) &&
+        target.ems_cluster_id
     end
-    realtime_targets.each_with_object({}) do |target, h|
-      target.perf_rollup_parents("realtime").to_a.compact.each do |parent|
-        pkey = "#{parent.class}:#{parent.id}"
-        (h[pkey] ||= []) << target
-      end
-    end
+    realtime_targets.group_by(&:ems_cluster)
   end
 
   # Determine queue options for each target
@@ -161,7 +180,8 @@ module Metric::Capture
     target_options = Hash.new { |h, k| h[k] = {:zone => zone} }
     # Create a new task for each rollup parent
     # mark each target with the rollup parent
-    targets_by_rollup_parent.each_with_object(target_options) do |(pkey, targets), h|
+    targets_by_rollup_parent.each_with_object(target_options) do |(parent, targets), h|
+      pkey = "#{parent.class.name}:#{parent.id}"
       name = "Performance rollup for #{pkey}"
       prev_task = MiqTask.where(:identifier => pkey).order("id DESC").first
       task_start_time = prev_task ? prev_task.context_data[:end] : default_task_start_time
@@ -193,13 +213,15 @@ module Metric::Capture
   end
   private_class_method :calc_target_options
 
+  # @param targets [Array<Object>] list of the targets for capture (from `capture_ems_targets`)
+  # @param target_options [ Hash{Object => Hash{Symbol => Object}}] list of options indexed by target
   def self.queue_captures(targets, target_options)
     # Queue the captures for each target
     use_historical = historical_days != 0
 
     targets.each do |target|
-      interval_name = perf_target_to_interval_name(target)
-      options = target_options[target]
+      options = target_options[target] || {}
+      interval_name = options[:interval] || perf_target_to_interval_name(target)
       target.perf_capture_queue(interval_name, options)
     rescue => err
       _log.warn("Failed to queue perf_capture for target [#{target.class.name}], [#{target.id}], [#{target.name}]: #{err}")

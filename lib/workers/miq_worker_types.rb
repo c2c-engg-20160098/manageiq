@@ -75,9 +75,9 @@ MIQ_WORKER_TYPES = {
   "MiqReportingWorker"                                                          => %i(manageiq_default),
   "MiqScheduleWorker"                                                           => %i(manageiq_default),
   "MiqSmartProxyWorker"                                                         => %i(manageiq_default),
-  "MiqUiWorker"                                                                 => %i(manageiq_default ui_dependencies),
+  "MiqUiWorker"                                                                 => %i(manageiq_default ui_dependencies graphql_api),
   "MiqVimBrokerWorker"                                                          => %i(manageiq_default),
-  "MiqWebServiceWorker"                                                         => %i(manageiq_default),
+  "MiqWebServiceWorker"                                                         => %i(manageiq_default graphql_api),
   "MiqRemoteConsoleWorker"                                                      => %i(manageiq_default),
 }.freeze
 
@@ -102,12 +102,9 @@ MIQ_WORKER_TYPES_IN_KILL_ORDER = %w(
   MiqGenericWorker
   MiqEventHandler
   ManageIQ::Providers::Azure::CloudManager::RefreshWorker
-  ManageIQ::Providers::Azure::NetworkManager::RefreshWorker
   ManageIQ::Providers::AzureStack::CloudManager::RefreshWorker
   ManageIQ::Providers::AzureStack::NetworkManager::RefreshWorker
   ManageIQ::Providers::Amazon::CloudManager::RefreshWorker
-  ManageIQ::Providers::Amazon::NetworkManager::RefreshWorker
-  ManageIQ::Providers::Amazon::StorageManager::Ebs::RefreshWorker
   ManageIQ::Providers::Amazon::StorageManager::S3::RefreshWorker
   ManageIQ::Providers::Amazon::AgentCoordinatorWorker
   ManageIQ::Providers::Google::CloudManager::RefreshWorker
@@ -122,13 +119,10 @@ MIQ_WORKER_TYPES_IN_KILL_ORDER = %w(
   ManageIQ::Providers::Redfish::PhysicalInfraManager::RefreshWorker
   ManageIQ::Providers::Redhat::InfraManager::RefreshWorker
   ManageIQ::Providers::Openstack::CloudManager::RefreshWorker
-  ManageIQ::Providers::Openstack::NetworkManager::RefreshWorker
   ManageIQ::Providers::Otc::CloudManager::RefreshWorker
   ManageIQ::Providers::Otc::NetworkManager::RefreshWorker
   ManageIQ::Providers::Redhat::NetworkManager::RefreshWorker
   ManageIQ::Providers::Openstack::InfraManager::RefreshWorker
-  ManageIQ::Providers::StorageManager::CinderManager::RefreshWorker
-  ManageIQ::Providers::StorageManager::SwiftManager::RefreshWorker
   ManageIQ::Providers::Vmware::CloudManager::RefreshWorker
   ManageIQ::Providers::Vmware::NetworkManager::RefreshWorker
   ManageIQ::Providers::Vmware::InfraManager::RefreshWorker

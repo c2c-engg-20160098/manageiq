@@ -1174,6 +1174,7 @@
         :memory_threshold: 600.megabytes
         :nice_delta: 7
         :poll_method: :escalate
+      :ems_operations_worker: {}
       :ems_refresh_worker:
         :defaults:
           :memory_threshold: 2.gigabytes
@@ -1189,8 +1190,6 @@
         :ems_refresh_worker_google_network: {}
         :ems_refresh_worker_microsoft: {}
         :ems_refresh_worker_nuage_network: {}
-        :ems_refresh_worker_cinder: {}
-        :ems_refresh_worker_swift: {}
       :event_handler:
         :cpu_usage_threshold: 0.percent
         :nice_delta: 7
