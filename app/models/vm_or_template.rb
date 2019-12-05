@@ -19,9 +19,7 @@ class VmOrTemplate < ApplicationRecord
   attr_accessor :surrogate_host
   @surrogate_host = nil
 
-  include SerializedEmsRefObjMixin
   include ProviderObjectMixin
-
   include ComplianceMixin
   include OwnershipMixin
   include CustomAttributeMixin
@@ -183,6 +181,7 @@ class VmOrTemplate < ApplicationRecord
   virtual_delegate :ram_size,                           :to => "hardware.memory_mb", :allow_nil => true, :default => 0, :type => :integer
 
   delegate :connect_lans, :disconnect_lans, :to => :hardware, :allow_nil => true
+  delegate :queue_name_for_ems_operations, :to => :ext_management_system, :allow_nil => true
 
   after_save :save_genealogy_information
 
@@ -336,6 +335,15 @@ class VmOrTemplate < ApplicationRecord
     _log.info("Invoking [#{verb}] through EMS: [#{ext_management_system.name}]")
     options = {:user_event => "Console Request Action [#{verb}], VM [#{name}]"}.merge(options)
     ext_management_system.send(verb, self, options)
+  end
+
+  def run_command_via_task(task_options, queue_options)
+    MiqTask.generic_action_with_callback(task_options, command_queue_options(queue_options))
+  end
+
+  def run_command_via_queue(method_name, queue_options)
+    queue_options[:method_name] = method_name
+    MiqQueue.put(command_queue_options(queue_options))
   end
 
   # keep the same method signature as others in retirement mixin
@@ -953,19 +961,6 @@ class VmOrTemplate < ApplicationRecord
   def log_proxies_format_instance(object)
     return 'Nil' if object.nil?
     "#{object.class.name}:#{object.id}-#{object.name}:#{object.try(:state)}"
-  end
-
-  def storage2hosts
-    hosts = storage.hosts.to_a if storage
-    hosts = [myhost] if hosts.blank?
-    return hosts unless host
-
-    # VMware needs a VMware host to resolve datastore names
-    if vendor == 'vmware'
-      hosts.delete_if { |h| !h.is_vmware? }
-    end
-
-    hosts
   end
 
   def storage2proxies
@@ -1844,6 +1839,16 @@ class VmOrTemplate < ApplicationRecord
       :subject => self,
       :options => options
     )
+  end
+
+  def command_queue_options(queue_options)
+    {
+      :class_name  => self.class.name,
+      :instance_id => id,
+      :role        => "ems_operations",
+      :queue_name  => queue_name_for_ems_operations,
+      :zone        => my_zone,
+    }.merge(queue_options)
   end
 
   # this is verbose, helper for generating arel

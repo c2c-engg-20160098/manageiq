@@ -164,6 +164,7 @@ class MiqWorker::Runner
   def find_worker_record
     @worker = self.class.corresponding_model.find_by(:guid => @cfg[:guid])
     do_exit("Unable to find instance for worker GUID [#{@cfg[:guid]}].", 1) if @worker.nil?
+    MiqWorker.my_guid = @cfg[:guid]
   end
 
   def starting_worker_record
@@ -259,10 +260,6 @@ class MiqWorker::Runner
 
   def message_exit(*_args)
     do_exit("Exit request received.")
-  end
-
-  def message_restarted(*_args)
-    # just consume the restarted message
   end
 
   def message_sync_config(*_args)

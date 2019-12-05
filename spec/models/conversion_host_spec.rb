@@ -30,14 +30,14 @@ RSpec.describe ConversionHost, :v2v do
         expect(conversion_host_1.eligible?).to eq(false)
       end
 
-      it "fails when no source transport method is enabled" do
+      it "fails when authentication check fails" do
         allow(conversion_host_1).to receive(:source_transport_method).and_return('vddk')
         allow(conversion_host_1).to receive(:authentication_check).and_return([false, 'failed'])
         allow(conversion_host_1).to receive(:check_concurrent_tasks).and_return(true)
         expect(conversion_host_1.eligible?).to eq(false)
       end
 
-      it "fails when no source transport method is enabled" do
+      it "fails when concurrent tasks check fails" do
         allow(conversion_host_1).to receive(:source_transport_method).and_return('vddk')
         allow(conversion_host_1).to receive(:authentication_check).and_return([true, 'worked'])
         allow(conversion_host_1).to receive(:check_concurrent_tasks).and_return(false)
@@ -52,14 +52,30 @@ RSpec.describe ConversionHost, :v2v do
       end
     end
 
+    context "#warm_migration_eligible?" do
+      it "fails when source transport method is ssh" do
+        allow(conversion_host_1).to receive(:source_transport_method).and_return('ssh')
+        allow(conversion_host_1).to receive(:authentication_check).and_return([true, 'worked'])
+        allow(conversion_host_1).to receive(:check_concurrent_tasks).and_return(true)
+        expect(conversion_host_1.warm_migration_eligible?).to eq(false)
+      end
+
+      it "succeeds when all criteria are met" do
+        allow(conversion_host_1).to receive(:source_transport_method).and_return('vddk')
+        allow(conversion_host_1).to receive(:authentication_check).and_return([true, 'worked'])
+        allow(conversion_host_1).to receive(:check_concurrent_tasks).and_return(true)
+        expect(conversion_host_1.eligible?).to eq(true)
+      end
+    end
+
     context "#check_concurrent_tasks" do
       context "default max concurrent tasks is equal to current active tasks" do
-        before { stub_settings_merge(:transformation => {:limits => {:max_concurrent_tasks_per_host => 1}}) }
+        before { stub_settings_merge(:transformation => {:limits => {:max_concurrent_tasks_per_conversion_host => 1}}) }
         it { expect(conversion_host_1.check_concurrent_tasks).to eq(false) }
       end
 
       context "default max concurrent tasks is greater than current active tasks" do
-        before { stub_settings_merge(:transformation => {:limits => {:max_concurrent_tasks_per_host => 10}}) }
+        before { stub_settings_merge(:transformation => {:limits => {:max_concurrent_tasks_per_conversion_host => 10}}) }
         it { expect(conversion_host_1.check_concurrent_tasks).to eq(true) }
       end
 
