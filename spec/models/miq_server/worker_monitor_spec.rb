@@ -20,9 +20,8 @@ describe "MiqWorker Monitor" do
         @worker.update(:status => MiqWorker::STATUS_STOPPED)
 
         expect(@miq_server.miq_workers.length).to eq(2)
-        ids = @miq_server.clean_worker_records
+        @miq_server.clean_worker_records
         expect(@miq_server.miq_workers.length).to eq(1)
-        expect(ids).to eq([@worker.id])
       end
 
       it "MiqServer#check_not_responding" do
@@ -36,9 +35,8 @@ describe "MiqWorker Monitor" do
         @worker.update(:status => MiqWorker::STATUS_STOPPING)
 
         expect(@miq_server.miq_workers.length).to eq(2)
-        ids = @miq_server.check_not_responding
+        @miq_server.check_not_responding
         expect(@miq_server.miq_workers.length).to eq(1)
-        expect(ids).to eq([@worker.id])
       end
 
       describe "#do_system_limit_exceeded" do
@@ -54,14 +52,14 @@ describe "MiqWorker Monitor" do
         end
 
         it "will kill the worker with the highest memory" do
-          expect(@miq_server).to receive(:restart_worker).with(@worker_to_kill, :memory_exceeded)
+          expect(@miq_server).to receive(:stop_worker).with(@worker_to_kill, :memory_exceeded)
           @miq_server.do_system_limit_exceeded
         end
 
         it "will handle workers with nil memory_usage" do
           @worker_to_keep.update!(:memory_usage => nil)
 
-          expect(@miq_server).to receive(:restart_worker).with(@worker_to_kill, :memory_exceeded)
+          expect(@miq_server).to receive(:stop_worker).with(@worker_to_kill, :memory_exceeded)
           @miq_server.do_system_limit_exceeded
         end
       end
@@ -147,61 +145,6 @@ describe "MiqWorker Monitor" do
     end
 
     context "A WorkerMonitor" do
-      context "with active messages without worker" do
-        before do
-          @actives = []
-          @actives << FactoryBot.create(:miq_queue, :state => 'dequeue', :msg_timeout => 4.minutes)
-          @actives << FactoryBot.create(:miq_queue, :state => 'dequeue', :msg_timeout => 5.minutes)
-        end
-
-        it "should timeout the right active messages" do
-          actives = MiqQueue.where(:state => 'dequeue')
-          expect(actives.length).to eq(@actives.length)
-
-          Timecop.travel 5.minutes do
-            @miq_server.validate_active_messages
-          end
-
-          actives = MiqQueue.where(:state => 'dequeue')
-          expect(actives.length).to eq(@actives.length - 1)
-        end
-      end
-
-      context "with expired active messages assigned to workers from multiple" do
-        before do
-          @miq_server2 = FactoryBot.create(:miq_server, :zone => @miq_server.zone)
-          @worker1 = FactoryBot.create(:miq_worker, :miq_server_id => @miq_server.id)
-          @worker2 = FactoryBot.create(:miq_worker, :miq_server_id => @miq_server2.id)
-
-          @actives = []
-        end
-
-        it "should timeout messages on my server or servers that are down" do
-          @actives << FactoryBot.create(:miq_queue, :state => 'dequeue', :msg_timeout => 4.minutes, :handler => @worker1)
-          @actives << FactoryBot.create(:miq_queue, :state => 'dequeue', :msg_timeout => 4.minutes, :handler => @worker2)
-
-          actives = MiqQueue.where(:state => 'dequeue')
-          expect(actives.length).to eq(@actives.length)
-
-          Timecop.travel 5.minutes do
-            @miq_server.validate_active_messages
-          end
-
-          actives = MiqQueue.where(:state => 'dequeue')
-          expect(actives.length).to eq(@actives.length - 1)
-          expect(actives.first.handler).to eq(@worker2)
-
-          @miq_server2.update_attribute(:status, 'stopped')
-
-          Timecop.travel 5.minutes do
-            @miq_server.validate_active_messages
-          end
-
-          actives = MiqQueue.where(:state => 'dequeue')
-          expect(actives.length).to eq(0)
-        end
-      end
-
       context "with vanilla generic worker" do
         before do
           @worker1 = FactoryBot.create(:miq_worker, :miq_server_id => @miq_server.id, :pid => 42, :type => 'MiqGenericWorker')
@@ -337,32 +280,13 @@ describe "MiqWorker Monitor" do
             expect(server.validate_worker(worker)).to be_falsey
             expect(worker.reload.status).to eq(MiqWorker::STATUS_STOPPING)
           end
-
-          context "to a file" do
-            before do
-              ENV["WORKER_HEARTBEAT_METHOD"] = "file"
-            end
-
-            after do
-              ENV["WORKER_HEARTBEAT_METHOD"] = nil
-            end
-
-            it "should mark not responding if not recently heartbeated via file" do
-              allow(server).to receive(:workers_last_heartbeat_to_file).and_return(20.minutes.ago)
-
-              expect(server.validate_worker(worker)).to be_falsey
-              expect(worker.reload.status).to eq(MiqWorker::STATUS_STOPPING)
-            end
-
-            it "should detect responding if recently heartbeated via file" do
-              expect(server.validate_worker(worker)).to be_truthy
-              expect(worker.reload.status).to eq(MiqWorker::STATUS_READY)
-            end
-          end
         end
 
         context "for excessive memory" do
-          before { worker.memory_usage = 2.gigabytes }
+          before do
+            worker.memory_usage = 2.gigabytes
+            worker.update(:last_heartbeat => Time.now.utc)
+          end
 
           it "should not trigger memory threshold if worker is creating" do
             worker.status = MiqWorker::STATUS_CREATING
@@ -376,19 +300,19 @@ describe "MiqWorker Monitor" do
 
           it "should trigger memory threshold if worker is started" do
             worker.status = MiqWorker::STATUS_STARTED
-            expect(server).to receive(:worker_set_monitor_status).with(worker.pid, :waiting_for_stop_before_restart).once
+            expect(server).to receive(:worker_set_monitor_status).with(worker.pid, :waiting_for_stop).once
             server.validate_worker(worker)
           end
 
           it "should trigger memory threshold if worker is ready" do
             worker.status = MiqWorker::STATUS_READY
-            expect(server).to receive(:worker_set_monitor_status).with(worker.pid, :waiting_for_stop_before_restart).once
+            expect(server).to receive(:worker_set_monitor_status).with(worker.pid, :waiting_for_stop).once
             server.validate_worker(worker)
           end
 
           it "should trigger memory threshold if worker is working" do
             worker.status = MiqWorker::STATUS_WORKING
-            expect(server).to receive(:worker_set_monitor_status).with(worker.pid, :waiting_for_stop_before_restart).once
+            expect(server).to receive(:worker_set_monitor_status).with(worker.pid, :waiting_for_stop).once
             server.validate_worker(worker)
           end
 

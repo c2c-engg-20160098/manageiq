@@ -72,7 +72,7 @@ class ExtManagementSystem < ApplicationRecord
   has_many :disks,             :through => :hardwares
   has_many :physical_servers,  :foreign_key => :ems_id, :inverse_of => :ext_management_system, :dependent => :destroy
 
-  has_many :storages,       -> { distinct },          :through => :hosts
+  has_many :storages, :foreign_key => :ems_id, :dependent => :destroy, :inverse_of => :ext_management_system
   has_many :ems_events,     -> { order("timestamp") }, :class_name => "EmsEvent",    :foreign_key => "ems_id",
                                                       :inverse_of => :ext_management_system
   has_many :generated_events, -> { order("timestamp") }, :class_name => "EmsEvent", :foreign_key => "generating_ems_id",
@@ -604,9 +604,10 @@ class ExtManagementSystem < ApplicationRecord
   end
 
   # Until all providers have an operations worker we can continue
-  # to use the GenericWorker to run ems_operations roles
+  # to use the GenericWorker to run ems_operations roles.
+  #
   def queue_name_for_ems_operations
-    nil
+    'generic'
   end
 
   def enforce_policy(target, event)

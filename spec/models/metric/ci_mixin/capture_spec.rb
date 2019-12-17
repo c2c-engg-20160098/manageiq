@@ -1,10 +1,4 @@
 describe Metric::CiMixin::Capture do
-  before do
-    MiqRegion.seed
-
-    @zone = EvmSpecHelper.local_miq_server.zone
-  end
-
   require ManageIQ::Providers::Openstack::Engine.root.join("spec/tools/openstack_data/openstack_data_test_helper")
   let(:zone) { EvmSpecHelper.create_guid_miq_server_zone[2] }
   let(:mock_meter_list) { OpenstackMeterListData.new }
@@ -288,7 +282,7 @@ describe Metric::CiMixin::Capture do
     def verify_perf_capture_queue(last_perf_capture_on, total_queue_items)
       Timecop.freeze do
         vm.last_perf_capture_on = last_perf_capture_on
-        vm.perf_capture_queue("realtime")
+        ems_openstack.perf_capture_object.queue_captures([vm], vm => {:interval => "realtime"})
         expect(MiqQueue.count).to eq total_queue_items
 
         # make sure the queue items are in the correct order
@@ -357,7 +351,7 @@ describe Metric::CiMixin::Capture do
     it "links supplied miq_task with queued item which allow to initialize MiqTask#started_on attribute" do
       MiqQueue.delete_all
       task = FactoryBot.create(:miq_task)
-      vm.perf_capture_queue("realtime", :task_id => task.id)
+      ems_openstack.perf_capture_object.queue_captures([vm], vm => {:interval => "realtime", :task_id => task.id})
       expect(MiqQueue.first.miq_task_id).to eq task.id
     end
   end
@@ -366,7 +360,7 @@ describe Metric::CiMixin::Capture do
     context "with capture days > 0 and multiple attempts" do
       def verify_perf_capture_queue_historical(last_perf_capture_on, total_queue_items)
         vm.last_perf_capture_on = last_perf_capture_on
-        vm.perf_capture_queue("historical")
+        ems_openstack.perf_capture_object.queue_captures([vm], vm => {:interval => "historical"})
         expect(MiqQueue.count).to eq total_queue_items
       end
 
@@ -409,83 +403,6 @@ describe Metric::CiMixin::Capture do
           verify_perf_capture_queue_historical(last_capture_on, 8)
           Timecop.travel(current_time + 20.minutes)
           verify_perf_capture_queue_historical(last_capture_on, 8)
-        end
-      end
-    end
-  end
-
-  context "handles archived container entities" do
-    it "get the correct queue name and zone from archived container entities" do
-      ems = FactoryBot.create(:ems_openshift, :name => 'OpenShiftProvider')
-      group = FactoryBot.create(:container_group, :name => "group", :ext_management_system => ems)
-      container = FactoryBot.create(:container,
-                                     :name                  => "container",
-                                     :container_group       => group,
-                                     :ext_management_system => ems)
-      project = FactoryBot.create(:container_project,
-                                   :name                  => "project",
-                                   :ext_management_system => ems)
-      container.disconnect_inv
-      group.disconnect_inv
-      project.disconnect_inv
-
-      expect(container.ems_for_capture_target).to eq ems
-      expect(group.ems_for_capture_target).to     eq ems
-      expect(project.ems_for_capture_target).to   eq ems
-
-      expect(container.my_zone).to eq ems.my_zone
-      expect(group.my_zone).to eq ems.my_zone
-      expect(project.my_zone).to eq ems.my_zone
-    end
-  end
-
-  describe ".perf_capture_realtime_now" do
-    context "with enabled and disabled targets", :with_enabled_disabled_vmware do
-      context "executing perf_capture_realtime_now" do
-        before do
-          @vm = Vm.first
-          @vm.perf_capture_realtime_now
-        end
-
-        it "should queue up realtime capture for vm" do
-          expect(MiqQueue.count).to eq(1)
-
-          msg = MiqQueue.first
-          expect(msg.priority).to eq(MiqQueue::HIGH_PRIORITY)
-          expect(msg.instance_id).to eq(@vm.id)
-          expect(msg.class_name).to eq("ManageIQ::Providers::Vmware::InfraManager::Vm")
-        end
-
-        context "with an existing queue item at a lower priority" do
-          before do
-            MiqQueue.first.update_attribute(:priority, MiqQueue::NORMAL_PRIORITY)
-            @vm.perf_capture_realtime_now
-          end
-
-          it "should raise the priority of the existing queue item" do
-            expect(MiqQueue.count).to eq(1)
-
-            msg = MiqQueue.first
-            expect(msg.priority).to eq(MiqQueue::HIGH_PRIORITY)
-            expect(msg.instance_id).to eq(@vm.id)
-            expect(msg.class_name).to eq("ManageIQ::Providers::Vmware::InfraManager::Vm")
-          end
-        end
-
-        context "with an existing queue item at a higher priority" do
-          before do
-            MiqQueue.first.update_attribute(:priority, MiqQueue::MAX_PRIORITY)
-            @vm.perf_capture_realtime_now
-          end
-
-          it "should not lower the priority of the existing queue item" do
-            expect(MiqQueue.count).to eq(1)
-
-            msg = MiqQueue.first
-            expect(msg.priority).to eq(MiqQueue::MAX_PRIORITY)
-            expect(msg.instance_id).to eq(@vm.id)
-            expect(msg.class_name).to eq("ManageIQ::Providers::Vmware::InfraManager::Vm")
-          end
         end
       end
     end

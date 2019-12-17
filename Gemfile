@@ -13,7 +13,7 @@ require File.join(Bundler::Plugin.index.load_paths("bundler-inject")[0], "bundle
 gem "manageiq-gems-pending", ">0", :require => 'manageiq-gems-pending', :git => "https://github.com/ManageIQ/manageiq-gems-pending.git", :branch => "master"
 
 # Modified gems for gems-pending.  Setting sources here since they are git references
-gem "handsoap", "~>0.2.5", :require => false, :git => "https://github.com/ManageIQ/handsoap.git", :tag => "v0.2.5-5"
+gem "handsoap", "=0.2.5.5", :require => false, :source => "http://rubygems.manageiq.org"
 
 # when using this Gemfile inside a providers Gemfile, the dependency for the provider is already declared
 def manageiq_plugin(plugin_name)
@@ -53,7 +53,7 @@ gem "highline",                       "~>1.6.21",      :require => false
 gem "inifile",                        "~>3.0",         :require => false
 gem "inventory_refresh",              "~>0.2.0",       :require => false
 gem "kubeclient",                     "~>4.0",         :require => false # For scaling pods at runtime
-gem "linux_admin",                    "~>1.2.4",       :require => false
+gem "linux_admin",                    "~>2.0",         :require => false
 gem "log_decorator",                  "~>0.1",         :require => false
 gem "manageiq-api-client",            "~>0.3.3",       :require => false
 gem "manageiq-loggers",               "~>0.3.0",       :require => false
@@ -77,7 +77,7 @@ gem "rake",                           ">=11.0",        :require => false
 gem "rest-client",                    "~>2.0.0",       :require => false
 gem "ripper_ruby_parser",             "~>1.5.1",       :require => false
 gem "ruby-progressbar",               "~>1.7.0",       :require => false
-gem "rubyzip",                        "~>1.3.0",       :require => false
+gem "rubyzip",                        "~>2.0.0",       :require => false
 gem "snmp",                           "~>1.2.0",       :require => false
 gem "sprockets",                      "~>3.0",         :require => false
 gem "sqlite3",                        "~>1.3.0",       :require => false
@@ -85,8 +85,8 @@ gem "sys-filesystem",                 "~>1.3.1"
 gem "terminal",                                        :require => false
 
 # Modified gems (forked on Github)
-gem "rugged",                         "=0.28.2", :require => false,   :git => "https://github.com/ManageIQ/rugged.git", :tag => "v0.28.2-1", :submodules => true
-gem "ruport",                         "=1.7.0",                       :git => "https://github.com/ManageIQ/ruport.git", :tag => "v1.7.0-3"
+gem "rugged",                         "=0.28.2.2", :source => "http://rubygems.manageiq.org", :require => false
+gem "ruport",                         "=1.7.0.3",  :source => "http://rubygems.manageiq.org"
 
 # In 1.9.3: Time.parse uses british version dd/mm/yyyy instead of american version mm/dd/yyyy
 # american_date fixes this to be compatible with 1.8.7 until all callers can be converted to the 1.9.3 format prior to parsing.
@@ -228,7 +228,7 @@ group :ui_dependencies do # Added to Bundler.require in config/application.rb
   c2c_manageiq_plugin "manageiq-decorators", "c2c_dev"
   c2c_manageiq_plugin "manageiq-ui-classic", "c2c_dev"
   # Modified gems (forked on Github)
-  gem "jquery-rjs",                   "=0.1.1",                       :git => "https://github.com/ManageIQ/jquery-rjs.git", :tag => "v0.1.1-1"
+  gem "jquery-rjs",                     "=0.1.1.1", :source => "http://rubygems.manageiq.org"
 end
 
 group :v2v, :ui_dependencies do

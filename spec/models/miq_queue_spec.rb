@@ -1,4 +1,4 @@
-describe MiqQueue do
+RSpec.describe MiqQueue do
   specify { expect(FactoryBot.build(:miq_queue)).to be_valid }
 
   context "#deliver" do
@@ -174,6 +174,37 @@ describe MiqQueue do
         expect($log).to receive(:warn)
         expect(msg).to receive(:destroy)
         msg.check_for_timeout
+      end
+    end
+  end
+
+  describe ".check_for_timeout" do
+    it "will destroy all timed out dequeued messages" do
+      handler = FactoryBot.create(:miq_ems_refresh_worker)
+      msg1 = FactoryBot.create(:miq_queue, :state => MiqQueue::STATE_DEQUEUE, :handler => handler, :msg_timeout => 1.minute)
+      msg2 = FactoryBot.create(:miq_queue, :state => MiqQueue::STATE_DEQUEUE, :handler => handler, :msg_timeout => 2.minutes)
+      msg3 = FactoryBot.create(:miq_queue, :state => MiqQueue::STATE_DEQUEUE, :handler => handler, :msg_timeout => 10.minutes)
+
+      Timecop.travel(5.minutes) do
+        described_class.check_for_timeout
+        expect(described_class.find_by(:id => msg1.id)).to be_nil
+        expect(described_class.find_by(:id => msg2.id)).to be_nil
+        expect(described_class.find_by(:id => msg3.id)).to_not be_nil
+      end
+    end
+  end
+
+  describe ".candidates_for_timeout" do
+    it "returns only messages in dequeue state which are outside their timeout" do
+      FactoryBot.create(:miq_queue, :state => MiqQueue::STATE_READY, :msg_timeout => 1.minute) # not in dequeue
+      FactoryBot.create(:miq_queue, :state => MiqQueue::STATE_DEQUEUE, :msg_timeout => 10.minutes) # not timed out
+
+      expected_ids = []
+      expected_ids << FactoryBot.create(:miq_queue, :state => MiqQueue::STATE_DEQUEUE, :msg_timeout => 1.minute).id
+      expected_ids << FactoryBot.create(:miq_queue, :state => MiqQueue::STATE_DEQUEUE, :msg_timeout => 2.minutes).id
+
+      Timecop.travel(5.minutes) do
+        expect(described_class.candidates_for_timeout.pluck(:id)).to match_array(expected_ids)
       end
     end
   end
@@ -934,6 +965,25 @@ describe MiqQueue do
 
     it "without a zone" do
       expect(MiqQueue.create!(:state => "ready")).to be_kind_of(MiqQueue)
+    end
+  end
+
+  context ".submit_job", :submit_job do
+    let(:ems) { FactoryBot.create(:ems_vmware) }
+    let(:vm) { FactoryBot.create(:vm_vmware, :ext_management_system => ems) }
+    let(:options) { {:method_name => 'enable', :class_name => vm.class.name, :instance_id => vm.id, :affinity => ems} }
+
+    it "sets options to expected values for an ems_operations service" do
+      queue = MiqQueue.submit_job(options.merge(:service => 'ems_operations'))
+
+      expect(queue).to have_attributes(
+        :class_name  => vm.class.name,
+        :method_name => options[:method_name],
+        :role        => 'ems_operations',
+        :queue_name  => ems.queue_name_for_ems_operations,
+        :zone        => ems.my_zone,
+        :args        => []
+      )
     end
   end
 end

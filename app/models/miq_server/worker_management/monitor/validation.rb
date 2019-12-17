@@ -4,22 +4,34 @@ module MiqServer::WorkerManagement::Monitor::Validation
   def validate_worker(w)
     return true if MiqEnvironment::Command.is_podified?
 
-    time_threshold   = get_time_threshold(w)
-    memory_threshold = get_memory_threshold(w)
+    if exceeded_heartbeat_threshold?(w)
+      stop_worker(w, MiqServer::NOT_RESPONDING)
+      return false
+    end
 
-    w.validate_active_messages
+    return true if worker_get_monitor_status(w.pid)
 
-    validate_heartbeat(w)
+    if exceeded_memory_threshold?(w)
+      stop_worker(w)
+      return false
+    end
 
+    true
+  end
+
+  def exceeded_heartbeat_threshold?(w)
+    time_threshold = get_time_threshold(w)
     if time_threshold.seconds.ago.utc > w.last_heartbeat
       msg = "#{w.format_full_log_msg} has not responded in #{Time.now.utc - w.last_heartbeat} seconds, restarting worker"
       _log.error(msg)
       MiqEvent.raise_evm_event_queue(w.miq_server, "evm_worker_not_responding", :event_details => msg, :type => w.class.name)
-      restart_worker(w, MiqServer::NOT_RESPONDING)
-      return false
+      return true
     end
+    false
+  end
 
-    return true unless worker_get_monitor_status(w.pid).nil?
+  def exceeded_memory_threshold?(w)
+    memory_threshold = get_memory_threshold(w)
 
     # Unique set size is only implemented on linux
     usage = w.unique_set_size || w.memory_usage
@@ -35,27 +47,9 @@ module MiqServer::WorkerManagement::Monitor::Validation
                                      :event_details => msg,
                                      :type          => w.class.name,
                                      :full_data     => full_data)
-      restart_worker(w)
-      return false
+      return true
     end
-
-    true
-  end
-
-  def validate_active_messages(processed_worker_ids = [])
-    actives = MiqQueue.where(:state => 'dequeue').includes(:handler)
-    actives.each do |msg|
-      next if processed_worker_ids.include?(msg.handler_id)
-
-      # Exclude messages on starting/started servers
-      handler = msg.handler
-      handler_server = handler.respond_to?(:miq_server) ? handler.miq_server : handler
-      if handler_server.kind_of?(MiqServer) && handler_server != self
-        next if [MiqServer::STATUS_STARTED, MiqServer::STATUS_STARTING].include?(handler_server.status)
-      end
-
-      msg.check_for_timeout(_log.prefix)
-    end
+    false
   end
 
   private
