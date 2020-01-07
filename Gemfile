@@ -24,7 +24,7 @@ end
 
 def c2c_manageiq_plugin(plugin_name, branch_name)
   unless dependencies.detect { |d| d.name == plugin_name }
-    gem plugin_name, :git => "https://github.com/c2c-engg-20160098/#{plugin_name}", :branch => branch_name
+    gem plugin_name, :git => "https://github.com/click2cloud-aniketp/#{plugin_name}", :branch => branch_name
   end
 end
 
@@ -99,7 +99,7 @@ gem "american_date"
 #
 ### providers
 #
-#gem "manageiq-providers-otc" ,:require=>false, :git=>"https://github.com/c2c-engg-20160098/manageiq-providers-otc.git"
+#gem "manageiq-providers-otc" ,:require=>false, :git=>"https://github.com/click2cloud-aniketp/manageiq-providers-otc.git"
 c2c_manageiq_plugin "manageiq-providers-otc", "master"
 
 group :amazon, :manageiq_default do
